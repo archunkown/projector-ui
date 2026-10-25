@@ -2,182 +2,456 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Living Room Projector</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ProjectorOS | Inktrap & Line</title>
+    <!-- Google Font for Inktrap aesthetic -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --bg-matte: #0a0a0a;
-            --surface: #171717;
-            --klein-blue: #000DB9;
-            --text-main: #f0f0f0;
-            --text-muted: #666666;
+            --bg-base: #0a0a0a;
+            --surface-card: #141414;
+            --text-main: #ffffff;
+            --text-muted: #737373;
+            --accent: #ffffff;
+            --focus-scale: 1.08;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            user-select: none;
         }
 
         body {
-            background-color: var(--bg-matte);
+            background-color: var(--bg-base);
             color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            /* SF UI Display for body text */
+            font-family: "SF UI Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
             height: 100vh;
+            width: 100vw;
             overflow: hidden;
             display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 4rem;
         }
 
-        .clock-container {
+        /* Inktrap Font Class */
+        h1, h2, h3, .inktrap {
+            font-family: 'Space Grotesk', sans-serif;
+            letter-spacing: -0.05vw;
+        }
+
+        /* --- Minimal Sidebar (Zone 0) --- */
+        .sidebar {
+            width: 6vw;
+            height: 100vh;
+            background: linear-gradient(to right, rgba(0,0,0,0.9) 0%, transparent 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 5vh;
+            z-index: 50;
+            position: fixed;
+            left: 0;
+        }
+
+        .sidebar-icon {
+            width: 2.5vw;
+            height: 2.5vw;
+            color: var(--text-muted);
+            margin: 2.5vh 0;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0.4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .sidebar-icon svg {
+            width: 100%;
+            height: 100%;
+            stroke-width: 1.2; /* Very thin minimal lines */
+        }
+
+        .sidebar-icon.focused {
+            color: var(--accent);
+            opacity: 1;
+            transform: scale(1.15);
+            filter: drop-shadow(0 0 0.5vw rgba(255,255,255,0.4));
+        }
+
+        /* --- Main Content (Zone 1) --- */
+        .main-content {
+            margin-left: 6vw;
+            width: 94vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Live Data Header */
+        .sys-status {
             position: absolute;
-            top: 4rem;
-            right: 5rem;
-            text-align: right;
+            top: 4vh;
+            right: 4vw;
+            display: flex;
+            gap: 2vw;
+            z-index: 100;
+            font-size: 1vw;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1vw;
+            align-items: center;
+        }
+
+        .sys-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
         }
 
         #time {
-            font-size: 4rem;
-            font-weight: 300;
-            letter-spacing: -2px;
-        }
-
-        #date {
-            color: var(--text-muted);
-            font-size: 1.2rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .header {
-            margin-bottom: 3rem;
-        }
-
-        h1 {
-            font-size: 2.5rem;
+            color: var(--text-main);
             font-weight: 600;
-            letter-spacing: -1px;
         }
 
-        .grid {
+        /* Hero Banner */
+        .hero {
+            height: 55vh;
+            width: 100%;
+            background: radial-gradient(circle at 70% 30%, rgba(30,30,40,0.4) 0%, var(--bg-base) 60%);
+            padding: 10vh 4vw 0 2vw;
             display: flex;
-            gap: 1.5rem;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
+        .hero-title {
+            font-size: 5vw;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 1vh;
+        }
+
+        .hero-desc {
+            width: 40vw;
+            font-size: 1.2vw;
+            color: var(--text-muted);
+            margin-bottom: 3vh;
+            line-height: 1.4;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1vw;
+        }
+
+        .btn {
+            padding: 1vw 2vw;
+            border-radius: 0.2vw;
+            font-size: 1.1vw;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.8vw;
+            transition: all 0.2s;
+            border: 1px solid rgba(255,255,255,0.2);
+            color: var(--text-main);
+            background: transparent;
+        }
+
+        .btn svg {
+            width: 1.2vw;
+            height: 1.2vw;
+            stroke-width: 1.5;
+        }
+
+        .btn.focused {
+            background-color: var(--text-main);
+            color: var(--bg-base);
+            transform: scale(1.05);
+            box-shadow: 0 0.5vw 1.5vw rgba(255,255,255,0.2);
+        }
+
+        /* --- Horizontal Scrolling Carousels --- */
+        .carousels-container {
+            flex-grow: 1;
+            padding-left: 2vw;
+            display: flex;
+            flex-direction: column;
+            gap: 3vh;
+            z-index: 10;
+            margin-top: 3vh;
+        }
+
+        .row-title {
+            font-size: 1.2vw;
+            color: var(--text-muted);
+            margin-bottom: 1vh;
+            text-transform: uppercase;
+            letter-spacing: 0.1vw;
+        }
+
+        .row-track {
+            display: flex;
+            gap: 1vw;
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            width: max-content;
+        }
+
+        /* Minimal App Cards */
         .card {
-            background-color: var(--surface);
-            border-radius: 12px;
-            padding: 2rem;
-            width: 280px;
-            height: 160px;
+            width: 16vw;
+            aspect-ratio: 16 / 9;
+            background-color: var(--surface-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 0.2vw;
+            position: relative;
+            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
-            transition: all 0.2s ease;
-            border: 2px solid transparent;
-            position: relative;
-            overflow: hidden;
+            padding: 1.5vw;
         }
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background-color: var(--klein-blue);
-            opacity: 0;
-            transition: opacity 0.2s ease;
-        }
-
-        .card h2 {
-            font-size: 1.5rem;
+        .card h3 {
+            font-size: 1.4vw;
             font-weight: 500;
-            z-index: 1;
+            color: var(--text-main);
         }
 
         .card p {
+            font-size: 0.85vw;
             color: var(--text-muted);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            z-index: 1;
+            margin-top: 0.2vh;
         }
 
-        /* The Focus State (TV Remote Navigation) */
+        .card-icon {
+            position: absolute;
+            top: 1.2vw;
+            right: 1.2vw;
+            width: 1.5vw;
+            height: 1.5vw;
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
+
         .card.focused {
-            border-color: var(--klein-blue);
-            transform: scale(1.05);
+            transform: scale(var(--focus-scale));
+            border-color: rgba(255,255,255,0.8);
             background-color: #1f1f1f;
-            box-shadow: 0 10px 30px rgba(0, 13, 185, 0.15);
+            z-index: 20;
+            box-shadow: 0 1vw 2vw rgba(0,0,0,0.5);
         }
 
-        .card.focused::before {
+        .card.focused .card-icon {
             opacity: 1;
+            color: var(--accent);
         }
     </style>
 </head>
 <body>
 
-    <div class="clock-container">
-        <div id="time">00:00</div>
-        <div id="date">Loading</div>
-    </div>
+    <!-- Minimal SVG Sidebar (Zone 0) -->
+    <nav class="sidebar" id="zone-sidebar">
+        <!-- Search/Home -->
+        <div class="sidebar-icon focused" data-url="javascript:location.reload()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </div>
+        <!-- Input/Source -->
+        <div class="sidebar-icon" data-url="intent://#Intent;action=android.settings.DISPLAY_SETTINGS;end">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
+        </div>
+        <!-- Settings -->
+        <div class="sidebar-icon" data-url="intent://#Intent;action=android.settings.SETTINGS;end">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
+        </div>
+    </nav>
 
-    <div class="header">
-        <h1>Source Select</h1>
-    </div>
+    <main class="main-content">
+        <!-- Live Data Header -->
+        <div class="sys-status">
+            <div class="sys-item">
+                <span id="weather-temp">--°C</span>
+                <span id="weather-desc">TRV</span>
+            </div>
+            <div class="sys-item" id="time">00:00</div>
+        </div>
 
-    <div class="grid">
-        <div class="card focused" data-index="0" data-url="intent://#Intent;package=com.netflix.ninja;scheme=https;end">
-            <h2>Cinema</h2>
-            <p>David Fincher / A24</p>
+        <!-- Hero Content (Zone 1, Row 0) -->
+        <header class="hero">
+            <h1 class="hero-title inktrap">HOME</h1>
+            <div class="hero-desc">Living room media terminal. Hardware accelerated. Spatial D-Pad navigation map active.</div>
+            
+            <div class="hero-buttons" id="zone-content-0">
+                <div class="btn focused" data-url="intent://#Intent;action=android.intent.action.GET_CONTENT;type=*/*;end">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+                    File Manager
+                </div>
+                <div class="btn" data-url="javascript:location.reload()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                    Reload UI
+                </div>
+            </div>
+        </header>
+
+        <div class="carousels-container">
+            <!-- Streaming Apps Carousel (Zone 1, Row 1) -->
+            <div>
+                <div class="row-title inktrap">Streaming & Cinema</div>
+                <div class="row-track" id="zone-content-1">
+                    <div class="card" data-url="intent://#Intent;package=com.netflix.ninja;scheme=https;end">
+                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+                        <h3>Netflix</h3><p>Film & Series</p>
+                    </div>
+                    <div class="card" data-url="intent://#Intent;package=com.amazon.amazonvideo.livingroom;scheme=https;end">
+                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                        <h3>Prime Video</h3><p>Amazon Originals</p>
+                    </div>
+                    <div class="card" data-url="intent://#Intent;package=com.apple.atve.androidtv.appletv;scheme=https;end">
+                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 1.44S8.22 5 6 5a5.2 5.2 0 0 0-5 5.24C1 15 4 22 6 22c1.25 0 2.5-1.06 4-1.06Z"></path><path d="M10 2c1 .5 2 2 2 5h-2c0-3-1-4-2-5Z"></path></svg>
+                        <h3>Apple TV</h3><p>Apple Originals</p>
+                    </div>
+                    <div class="card" data-url="intent://#Intent;package=in.startv.hotstar;scheme=https;end">
+                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                        <h3>JioHotstar</h3><p>Sports & Entertainment</p>
+                    </div>
+                    <div class="card" data-url="intent://#Intent;package=com.sonyliv;scheme=https;end">
+                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                        <h3>Sony LIV</h3><p>Live TV & Originals</p>
+                    </div>
+                    <div class="card" data-url="intent://#Intent;package=com.graymatrix.did;scheme=https;end">
+                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                        <h3>ZEE5</h3><p>Regional Content</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Media & Broadcast (Zone 1, Row 2) -->
+            <div>
+                <div class="row-title inktrap">Media & Broadcast</div>
+                <div class="row-track" id="zone-content-2">
+                    <div class="card" data-url="intent://#Intent;package=com.google.android.youtube.tv;scheme=https;end">
+                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="18" rx="2.5" ry="2.5"></rect><polygon points="10 8 16 12 10 16 10 8"></polygon></svg>
+                        <h3>YouTube</h3><p>Video Broadcasts</p>
+                    </div>
+                    <div class="card" data-url="intent://#Intent;package=com.spotify.tv.android;scheme=https;end">
+                        <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><path d="M8 11.5c2.5-1 5.5-.5 8 1"></path><path d="M7.5 15c2-.5 4.5-.5 6.5.5"></path><path d="M9 18c1.5-.5 3-.5 4.5 0"></path></svg>
+                        <h3>Spotify</h3><p>Audio & Podcasts</p>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card" data-index="1" data-url="intent://#Intent;package=com.amazon.amazonvideo.livingroom;scheme=https;end">
-            <h2>Series</h2>
-            <p>Dark / 3%</p>
-        </div>
-        <div class="card" data-index="2" data-url="intent://#Intent;package=com.google.android.youtube.tv;scheme=https;end">
-            <h2>Media</h2>
-            <p>YouTube / Broadcasts</p>
-        </div>
-        <div class="card" data-index="3" data-url="intent://#Intent;action=android.settings.SETTINGS;end">
-            <h2>System</h2>
-            <p>Device Configuration</p>
-        </div>
-    </div>
+    </main>
 
     <script>
-        // Clock functionality
-        function updateClock() {
+        // --- 1. Live Metadata ---
+        function updateTime() {
             const now = new Date();
             document.getElementById('time').textContent = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
-            document.getElementById('date').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
         }
-        setInterval(updateClock, 1000);
-        updateClock();
+        setInterval(updateTime, 1000);
+        updateTime();
 
-        // TV Remote Spatial Navigation
-        const cards = document.querySelectorAll('.card');
-        let currentIndex = 0;
+        async function fetchWeather() {
+            try {
+                const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=8.5241&longitude=76.9366&current_weather=true');
+                const data = await res.json();
+                document.getElementById('weather-temp').innerText = Math.round(data.current_weather.temperature) + '°C';
+                
+                const code = data.current_weather.weathercode;
+                let desc = "CLEAR";
+                if (code > 0 && code <= 3) desc = "CLOUDY";
+                if (code >= 51 && code <= 67) desc = "RAIN";
+                document.getElementById('weather-desc').innerText = desc;
+            } catch (error) {}
+        }
+        fetchWeather();
+        setInterval(fetchWeather, 1800000);
+
+        // --- 2. Netflix-Style Zone Spatial Navigation ---
+        let currentZone = 'content'; // Start in main grid
+        let sidebarIndex = 0;
+        const sidebarItems = document.querySelectorAll('.sidebar-icon');
+        
+        // Content Grid State (0: Hero, 1: Row 1, 2: Row 2)
+        let contentRow = 1; // Default to first streaming row
+        let contentCols = [0, 0, 0]; 
+        
+        const contentGroups = [
+            document.getElementById('zone-content-0').children,
+            document.getElementById('zone-content-1').children,
+            document.getElementById('zone-content-2').children
+        ];
+
+        function updateFocus() {
+            document.querySelectorAll('.focused').forEach(el => el.classList.remove('focused'));
+
+            if (currentZone === 'sidebar') {
+                sidebarItems[sidebarIndex].classList.add('focused');
+            } else {
+                const activeItem = contentGroups[contentRow][contentCols[contentRow]];
+                activeItem.classList.add('focused');
+                
+                // Track Scrolling for Horizontal Carousels
+                if (contentRow > 0) {
+                    const track = activeItem.parentElement;
+                    // Offset = index * (card width 16vw + gap 1vw)
+                    const offset = contentCols[contentRow] * 17; 
+                    track.style.transform = `translateX(-${offset}vw)`;
+                }
+            }
+        }
 
         window.addEventListener('keydown', (e) => {
-            cards[currentIndex].classList.remove('focused');
+            if (currentZone === 'sidebar') {
+                if (e.key === 'ArrowUp') sidebarIndex = Math.max(0, sidebarIndex - 1);
+                if (e.key === 'ArrowDown') sidebarIndex = Math.min(sidebarItems.length - 1, sidebarIndex + 1);
+                if (e.key === 'ArrowRight') {
+                    currentZone = 'content';
+                }
+                if (e.key === 'Enter') window.location.href = sidebarItems[sidebarIndex].getAttribute('data-url');
+            } 
+            else if (currentZone === 'content') {
+                const maxCol = contentGroups[contentRow].length - 1;
+                const maxRow = contentGroups.length - 1;
 
-            if (e.key === 'ArrowRight') {
-                currentIndex = (currentIndex + 1) % cards.length;
-            } else if (e.key === 'ArrowLeft') {
-                currentIndex = (currentIndex - 1 + cards.length) % cards.length;
-            } else if (e.key === 'Enter') {
-                // Trigger the Android intent or web URL stored in data-url
-                const targetUrl = cards[currentIndex].getAttribute('data-url');
-                window.location.href = targetUrl;
+                if (e.key === 'ArrowLeft') {
+                    if (contentCols[contentRow] > 0) {
+                        contentCols[contentRow]--;
+                    } else {
+                        currentZone = 'sidebar'; // Snap to sidebar if at far left
+                    }
+                }
+                if (e.key === 'ArrowRight') {
+                    contentCols[contentRow] = Math.min(maxCol, contentCols[contentRow] + 1);
+                }
+                if (e.key === 'ArrowUp') {
+                    contentRow = Math.max(0, contentRow - 1);
+                    contentCols[contentRow] = Math.min(contentCols[contentRow], contentGroups[contentRow].length - 1);
+                }
+                if (e.key === 'ArrowDown') {
+                    contentRow = Math.min(maxRow, contentRow + 1);
+                    contentCols[contentRow] = Math.min(contentCols[contentRow], contentGroups[contentRow].length - 1);
+                }
+                if (e.key === 'Enter') {
+                    const activeItem = contentGroups[contentRow][contentCols[contentRow]];
+                    activeItem.style.transform = 'scale(1)';
+                    setTimeout(() => {
+                        activeItem.style.transform = `scale(1.08)`;
+                        window.location.href = activeItem.getAttribute('data-url');
+                    }, 150);
+                }
             }
-
-            cards[currentIndex].classList.add('focused');
+            updateFocus();
         });
+
+        // Init Focus
+        updateFocus();
     </script>
 </body>
 </html>
