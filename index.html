@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ProjectorOS | Inktrap & Line</title>
-    <!-- Google Font for Inktrap aesthetic -->
+    <title>ProjectorOS | Fully Active</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -29,7 +28,6 @@
         body {
             background-color: var(--bg-base);
             color: var(--text-main);
-            /* SF UI Display for body text */
             font-family: "SF UI Display", -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
             height: 100vh;
             width: 100vw;
@@ -37,13 +35,12 @@
             display: flex;
         }
 
-        /* Inktrap Font Class */
         h1, h2, h3, .inktrap {
             font-family: 'Space Grotesk', sans-serif;
             letter-spacing: -0.05vw;
         }
 
-        /* --- Minimal Sidebar (Zone 0) --- */
+        /* --- Minimal Sidebar --- */
         .sidebar {
             width: 6vw;
             height: 100vh;
@@ -67,22 +64,23 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            cursor: pointer;
         }
 
         .sidebar-icon svg {
             width: 100%;
             height: 100%;
-            stroke-width: 1.2; /* Very thin minimal lines */
+            stroke-width: 1.2;
         }
 
-        .sidebar-icon.focused {
+        .sidebar-icon.focused, .sidebar-icon:hover {
             color: var(--accent);
             opacity: 1;
             transform: scale(1.15);
             filter: drop-shadow(0 0 0.5vw rgba(255,255,255,0.4));
         }
 
-        /* --- Main Content (Zone 1) --- */
+        /* --- Main Content --- */
         .main-content {
             margin-left: 6vw;
             width: 94vw;
@@ -92,7 +90,6 @@
             position: relative;
         }
 
-        /* Live Data Header */
         .sys-status {
             position: absolute;
             top: 4vh;
@@ -118,7 +115,7 @@
             font-weight: 600;
         }
 
-        /* Hero Banner */
+        /* --- Hero Banner --- */
         .hero {
             height: 55vh;
             width: 100%;
@@ -162,6 +159,7 @@
             border: 1px solid rgba(255,255,255,0.2);
             color: var(--text-main);
             background: transparent;
+            cursor: pointer;
         }
 
         .btn svg {
@@ -170,14 +168,14 @@
             stroke-width: 1.5;
         }
 
-        .btn.focused {
+        .btn.focused, .btn:hover {
             background-color: var(--text-main);
             color: var(--bg-base);
             transform: scale(1.05);
             box-shadow: 0 0.5vw 1.5vw rgba(255,255,255,0.2);
         }
 
-        /* --- Horizontal Scrolling Carousels --- */
+        /* --- Carousels --- */
         .carousels-container {
             flex-grow: 1;
             padding-left: 2vw;
@@ -203,7 +201,6 @@
             width: max-content;
         }
 
-        /* Minimal App Cards */
         .card {
             width: 16vw;
             aspect-ratio: 16 / 9;
@@ -216,6 +213,7 @@
             flex-direction: column;
             justify-content: flex-end;
             padding: 1.5vw;
+            cursor: pointer;
         }
 
         .card h3 {
@@ -240,7 +238,7 @@
             opacity: 0.5;
         }
 
-        .card.focused {
+        .card.focused, .card:hover {
             transform: scale(var(--focus-scale));
             border-color: rgba(255,255,255,0.8);
             background-color: #1f1f1f;
@@ -248,7 +246,7 @@
             box-shadow: 0 1vw 2vw rgba(0,0,0,0.5);
         }
 
-        .card.focused .card-icon {
+        .card.focused .card-icon, .card:hover .card-icon {
             opacity: 1;
             color: var(--accent);
         }
@@ -256,24 +254,19 @@
 </head>
 <body>
 
-    <!-- Minimal SVG Sidebar (Zone 0) -->
     <nav class="sidebar" id="zone-sidebar">
-        <!-- Search/Home -->
         <div class="sidebar-icon focused" data-url="javascript:location.reload()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </div>
-        <!-- Input/Source -->
         <div class="sidebar-icon" data-url="intent://#Intent;action=android.settings.DISPLAY_SETTINGS;end">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect><polyline points="17 2 12 7 7 2"></polyline></svg>
         </div>
-        <!-- Settings -->
         <div class="sidebar-icon" data-url="intent://#Intent;action=android.settings.SETTINGS;end">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>
         </div>
     </nav>
 
     <main class="main-content">
-        <!-- Live Data Header -->
         <div class="sys-status">
             <div class="sys-item">
                 <span id="weather-temp">--°C</span>
@@ -282,7 +275,6 @@
             <div class="sys-item" id="time">00:00</div>
         </div>
 
-        <!-- Hero Content (Zone 1, Row 0) -->
         <header class="hero">
             <h1 class="hero-title inktrap">HOME</h1>
             <div class="hero-desc">Living room media terminal. Hardware accelerated. Spatial D-Pad navigation map active.</div>
@@ -300,7 +292,6 @@
         </header>
 
         <div class="carousels-container">
-            <!-- Streaming Apps Carousel (Zone 1, Row 1) -->
             <div>
                 <div class="row-title inktrap">Streaming & Cinema</div>
                 <div class="row-track" id="zone-content-1">
@@ -331,7 +322,6 @@
                 </div>
             </div>
 
-            <!-- Media & Broadcast (Zone 1, Row 2) -->
             <div>
                 <div class="row-title inktrap">Media & Broadcast</div>
                 <div class="row-track" id="zone-content-2">
@@ -349,7 +339,7 @@
     </main>
 
     <script>
-        // --- 1. Live Metadata ---
+        // 1. Live Metadata
         function updateTime() {
             const now = new Date();
             document.getElementById('time').textContent = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
@@ -373,13 +363,12 @@
         fetchWeather();
         setInterval(fetchWeather, 1800000);
 
-        // --- 2. Netflix-Style Zone Spatial Navigation ---
-        let currentZone = 'content'; // Start in main grid
+        // 2. Navigation State
+        let currentZone = 'content'; 
         let sidebarIndex = 0;
         const sidebarItems = document.querySelectorAll('.sidebar-icon');
         
-        // Content Grid State (0: Hero, 1: Row 1, 2: Row 2)
-        let contentRow = 1; // Default to first streaming row
+        let contentRow = 1; 
         let contentCols = [0, 0, 0]; 
         
         const contentGroups = [
@@ -388,6 +377,23 @@
             document.getElementById('zone-content-2').children
         ];
 
+        // 3. Execution Function (For both Mouse & Remote)
+        function launchUrl(url) {
+            if (!url) return;
+            window.location.href = url;
+        }
+
+        // 4. Mouse / Touch Listeners (NEW)
+        document.querySelectorAll('.sidebar-icon, .btn, .card').forEach(el => {
+            el.addEventListener('click', () => {
+                el.style.transform = 'scale(1)';
+                setTimeout(() => {
+                    launchUrl(el.getAttribute('data-url'));
+                }, 150);
+            });
+        });
+
+        // 5. D-Pad Logic
         function updateFocus() {
             document.querySelectorAll('.focused').forEach(el => el.classList.remove('focused'));
 
@@ -397,10 +403,8 @@
                 const activeItem = contentGroups[contentRow][contentCols[contentRow]];
                 activeItem.classList.add('focused');
                 
-                // Track Scrolling for Horizontal Carousels
                 if (contentRow > 0) {
                     const track = activeItem.parentElement;
-                    // Offset = index * (card width 16vw + gap 1vw)
                     const offset = contentCols[contentRow] * 17; 
                     track.style.transform = `translateX(-${offset}vw)`;
                 }
@@ -414,7 +418,7 @@
                 if (e.key === 'ArrowRight') {
                     currentZone = 'content';
                 }
-                if (e.key === 'Enter') window.location.href = sidebarItems[sidebarIndex].getAttribute('data-url');
+                if (e.key === 'Enter') launchUrl(sidebarItems[sidebarIndex].getAttribute('data-url'));
             } 
             else if (currentZone === 'content') {
                 const maxCol = contentGroups[contentRow].length - 1;
@@ -424,7 +428,7 @@
                     if (contentCols[contentRow] > 0) {
                         contentCols[contentRow]--;
                     } else {
-                        currentZone = 'sidebar'; // Snap to sidebar if at far left
+                        currentZone = 'sidebar';
                     }
                 }
                 if (e.key === 'ArrowRight') {
@@ -443,14 +447,13 @@
                     activeItem.style.transform = 'scale(1)';
                     setTimeout(() => {
                         activeItem.style.transform = `scale(1.08)`;
-                        window.location.href = activeItem.getAttribute('data-url');
+                        launchUrl(activeItem.getAttribute('data-url'));
                     }, 150);
                 }
             }
             updateFocus();
         });
 
-        // Init Focus
         updateFocus();
     </script>
 </body>
