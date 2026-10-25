@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Living Room Projector</title>
+    <style>
+        :root {
+            --bg-matte: #0a0a0a;
+            --surface: #171717;
+            --klein-blue: #000DB9;
+            --text-main: #f0f0f0;
+            --text-muted: #666666;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-matte);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem;
+        }
+
+        .clock-container {
+            position: absolute;
+            top: 4rem;
+            right: 5rem;
+            text-align: right;
+        }
+
+        #time {
+            font-size: 4rem;
+            font-weight: 300;
+            letter-spacing: -2px;
+        }
+
+        #date {
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .header {
+            margin-bottom: 3rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 600;
+            letter-spacing: -1px;
+        }
+
+        .grid {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--surface);
+            border-radius: 12px;
+            padding: 2rem;
+            width: 280px;
+            height: 160px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            transition: all 0.2s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background-color: var(--klein-blue);
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            z-index: 1;
+        }
+
+        .card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            z-index: 1;
+        }
+
+        /* The Focus State (TV Remote Navigation) */
+        .card.focused {
+            border-color: var(--klein-blue);
+            transform: scale(1.05);
+            background-color: #1f1f1f;
+            box-shadow: 0 10px 30px rgba(0, 13, 185, 0.15);
+        }
+
+        .card.focused::before {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="clock-container">
+        <div id="time">00:00</div>
+        <div id="date">Loading</div>
+    </div>
+
+    <div class="header">
+        <h1>Source Select</h1>
+    </div>
+
+    <div class="grid">
+        <div class="card focused" data-index="0" data-url="intent://#Intent;package=com.netflix.ninja;scheme=https;end">
+            <h2>Cinema</h2>
+            <p>David Fincher / A24</p>
+        </div>
+        <div class="card" data-index="1" data-url="intent://#Intent;package=com.amazon.amazonvideo.livingroom;scheme=https;end">
+            <h2>Series</h2>
+            <p>Dark / 3%</p>
+        </div>
+        <div class="card" data-index="2" data-url="intent://#Intent;package=com.google.android.youtube.tv;scheme=https;end">
+            <h2>Media</h2>
+            <p>YouTube / Broadcasts</p>
+        </div>
+        <div class="card" data-index="3" data-url="intent://#Intent;action=android.settings.SETTINGS;end">
+            <h2>System</h2>
+            <p>Device Configuration</p>
+        </div>
+    </div>
+
+    <script>
+        // Clock functionality
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('time').textContent = now.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+            document.getElementById('date').textContent = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // TV Remote Spatial Navigation
+        const cards = document.querySelectorAll('.card');
+        let currentIndex = 0;
+
+        window.addEventListener('keydown', (e) => {
+            cards[currentIndex].classList.remove('focused');
+
+            if (e.key === 'ArrowRight') {
+                currentIndex = (currentIndex + 1) % cards.length;
+            } else if (e.key === 'ArrowLeft') {
+                currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+            } else if (e.key === 'Enter') {
+                // Trigger the Android intent or web URL stored in data-url
+                const targetUrl = cards[currentIndex].getAttribute('data-url');
+                window.location.href = targetUrl;
+            }
+
+            cards[currentIndex].classList.add('focused');
+        });
+    </script>
+</body>
+</html>
